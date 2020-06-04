@@ -130,46 +130,41 @@ CONSTRAINT FK_COD_PROD_VEND FOREIGN KEY(COD_PROD) REFERENCES ESTOQUE_PRODUTO(PRO
 );
 
 
-
-
-
-
-
 ---------------------------------------------------------------------------------------------------------------
 --------------------------------------------------------------------------------------------------------------
 CREATE SEQUENCE SEQ_ENDERECO;
 INSERT INTO ENDERECO(COD_ENDERECO, LOGRADOURO, NUMERO, BAIRRO, CIDADE, ESTADO, CEP) VALUES (
 SEQ_ENDERECO.NEXTVAL,
-'RUA TESTE4',
-'44',
-'BAIRRO TESTE4',
-'CIDADE TESTE4',
-'ESTADO TESTE5',
-'CEP TESTE5'
+'Avenida Alexanderplatz',
+'110',
+'Mitte',
+'Berlim',
+'Brandenburgo',
+'41420-430'
 );
 
 SELECT * FROM ENDERECO;
 
-DELETE FROM ENDERECO WHERE COD_ENDERECO = 6;
-DELETE FROM ENDERECO;
 ---------------------------------------------------------------------------------------------------------------
 CREATE SEQUENCE SEQ_FORNECEDOR;
 INSERT INTO FORNECEDOR(COD_FORN, NOME_FORN, CPF_FORN, INSCRICAO_ESTADUAL_FORN, CNPJ_FORN, BLOQ_FORN,
 DESCRICAO_FORN, FORMA_PAGAMENTO_FORN, RAZAO_SOCIAL_FORN, ENDERECO_FORN) VALUES (
 SEQ_FORNECEDOR.NEXTVAL,
-'FORNECEDOR DE SAPATOS',
+'Mobil Gear',
 '',
-'111.111.111.111',
-'001.001.001.001',
+'666.666.666.666',
+'006.006.006.006',
 0,
-'SAPATOS DE COURO MASCULINOS',
-'BOLETO BANCARIO',
-'Sapatos Ltda',
-6
+'Acessorios para Celular',
+'Paypal',
+'Mobil Gear Ltda',
+15
 );
 
 
 SELECT * FROM FORNECEDOR;
+
+
 
 ALTER TABLE FORNECEDOR MODIFY (RAZAO_SOCIAL_FORN VARCHAR(30));
 
@@ -208,3 +203,11 @@ TO_DATE('11-OCT-2002','DD-MON-YYYY'),
 1234,00
 
 );
+
+--------------------------------------------------------------------------------------------------------------
+
+SELECT * FROM PRODUTO_COMPRADO;
+
+INSERT INTO PRODUTO_COMPRADO(PROD_QTDE_COMP, PROD_VALOR_COMP, COD_COMPRA, COD_PROD) VALUES (
+
+
