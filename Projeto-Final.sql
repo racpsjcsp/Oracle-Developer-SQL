@@ -151,15 +151,15 @@ CREATE SEQUENCE SEQ_FORNECEDOR;
 INSERT INTO FORNECEDOR(COD_FORN, NOME_FORN, CPF_FORN, INSCRICAO_ESTADUAL_FORN, CNPJ_FORN, BLOQ_FORN,
 DESCRICAO_FORN, FORMA_PAGAMENTO_FORN, RAZAO_SOCIAL_FORN, ENDERECO_FORN) VALUES (
 SEQ_FORNECEDOR.NEXTVAL,
-'Dore Mifa',
+'Dore Mifa Clone',
 '',
-'352.452.552.652',
-'302.402.502.602',
+'352.452.552.152',
+'302.402.502.102',
 0,
 'Instrumentos Musicais e Acessorios',
 'Cartao Debito',
 'Dore Mifa Ltda',
-21
+NULL
 );
 
 
@@ -237,7 +237,7 @@ TO_DATE('21-JAN-2011','DD-MON-YYYY'),
 0,
 '',
 15,
-20,
+20.50,
 15,
 10
 );
@@ -286,8 +286,99 @@ INSERT INTO PRODUTO_VENDIDO(PROD_QTDE_VEND, PROD_VALOR_VEND, VENDA_NFE_SAIDA, CO
 18,
 20,
 100345,
-39,
-SEQ_COD_PROD_VEND.NEXTVAL
+38,
+2
 );
+
+COMMIT;
+
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+
+-- VIEW
+SELECT * FROM ESTOQUE_PRODUTO;
+
+SELECT PROD_DESC, PROD_PRECO_CUSTO, PROD_PRECO_VENDA, PROD_PRECO_FORN FROM ESTOQUE_PRODUTO WHERE PROD_PRECO_VENDA > 25;
+
+CREATE OR REPLACE VIEW PRECOS AS SELECT PROD_DESC, PROD_PRECO_CUSTO, PROD_PRECO_VENDA, PROD_PRECO_FORN
+FROM ESTOQUE_PRODUTO WHERE PROD_PRECO_VENDA > 25;
+
+SELECT * FROM PRECOS;
+
+COMMIT;
+--------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------
+
+--JOIN
+--SELECIONA TODAS INFORMACOES DE FORNECEDOR E ENDERECO
+SELECT * FROM FORNECEDOR F, ENDERECO E WHERE F.ENDERECO_FORN = E.COD_ENDERECO;
+
+--INNER JOIN
+--SELECIONA TODAS AS INFORMACOES DO FORNECEDOR E O ENDERECO, INCLUINDO OS FORNECEDORES QUE NAO POSSUEM ENDERECO CADASTRADO
+SELECT NOME_FORN, DESCRICAO_FORN FROM FORNECEDOR JOIN ENDERECO ON FORNECEDOR.ENDERECO_FORN = ENDERECO.COD_ENDERECO;
+
+--LEFT JOIN
+--SELECIONA TODAS AS INFORMACOES DE ENDERECO, INCLUINDO OS ENDERECOS QUE NAO POSSUEM FORNECEDORES VINCULADOS
+SELECT NOME_FORN, DESCRICAO_FORN, LOGRADOURO FROM FORNECEDOR LEFT JOIN ENDERECO ON FORNECEDOR.ENDERECO_FORN = ENDERECO.COD_ENDERECO;
+
+--RIGHT JOIN
+--SELECIONA INFORMACOES DE FORNECEDOR ENDERECO MESMO QUE NAO TENHA FORNECEDOR CADASTRADO COM ENDERECO
+SELECT NOME_FORN, DESCRICAO_FORN, LOGRADOURO FROM FORNECEDOR RIGHT JOIN ENDERECO ON FORNECEDOR.ENDERECO_FORN = ENDERECO.COD_ENDERECO;
+
+--UNION (mesma tabela ou tabelas diferentes em que as colunas sejam compativeis)
+--
+SELECT * FROM FORNECEDOR;
+
+SELECT * FROM FORNECEDOR
+WHERE FORMA_PAGAMENTO_FORN = 'Paypal'
+UNION
+SELECT * FROM FORNECEDOR
+WHERE FORMA_PAGAMENTO_FORN = 'Boleto Bancario';
+    
+SELECT PROD_VALOR_COMP FROM PRODUTO_COMPRADO
+UNION
+SELECT PROD_VALOR_VEND FROM PRODUTO_VENDIDO;
+
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+--GROUP BY
+--PEGAR A SOMA DE QUANTIDADE E A SOMA DO VALOR TOTAL SEPARADOS POR CODIGO E DESCRICAO
+SELECT * FROM ESTOQUE_PRODUTO;
+
+SELECT COD_PROD, PROD_DESC, SUM(PROD_QTDE_VEND) AS SOMA, SUM(PROD_VALOR_VEND) AS TOTAL FROM ESTOQUE_PRODUTO JOIN PRODUTO_VENDIDO ON PROD_COD = COD_PROD 
+GROUP BY
+COD_PROD, PROD_DESC
+ORDER BY COD_PROD, PROD_DESC;
+
+SELECT SUM(PROD_QTDE_VEND) FROM PRODUTO_VENDIDO;
+
+SELECT SUM(PROD_VALOR_VEND) FROM PRODUTO_VENDIDO;
+
+SELECT COD_PROD, PROD_DESC, SUM(PROD_QTDE_VEND) AS SOMA, SUM(PROD_VALOR_VEND) AS TOTAL FROM ESTOQUE_PRODUTO
+
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+--HAVING
+JOIN PRODUTO_VENDIDO ON PROD_COD = COD_PROD 
+GROUP BY
+COD_PROD, PROD_DESC
+HAVING SUM(PROD_VALOR_VEND) > 15;
+
+
+
+
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+------------------------------------------------------------------------------------------------------------------
+
+--SUBCONSULTA
+SELECT * FROM CLIENTE WHERE DESCRICAO_CLIENTE = 'Pessoa Fisica' AND ENDERECO_CLIENTE IN(
+SELECT COD_ENDERECO FROM ENDERECO WHERE CIDADE = 'Sao Jose dos Campos');
+
+SELECT * FROM ENDERECO;
+
 
 COMMIT;
